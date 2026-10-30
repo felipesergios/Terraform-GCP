@@ -158,3 +158,61 @@ resource "google_compute_router_nat" "gcp_mycloud_nat" {
     source_ip_ranges_to_nat = ["ALL_IP_RANGES"]
   }
 }
+
+
+# ============================================================
+# PRIVATE SERVICES ACCESS (PSA)
+# ============================================================
+#
+# Reserva uma faixa CIDR exclusiva para serviços gerenciados
+# do Google, como Cloud SQL.
+#
+# Essa faixa NÃO pertence diretamente às subnets infra/prod.
+# Ela será utilizada pelo peering de serviços do Google.
+#
+# OCI: conceito semelhante à conectividade privada com
+# serviços gerenciados, mas implementado de outra forma.
+#
+
+resource "google_compute_global_address" "private_services" {
+
+  name = "gcp-mycloud-private-services"
+
+  description = "Faixa CIDR reservada para Google Managed Services"
+
+  address_type = "INTERNAL"
+
+  purpose = "VPC_PEERING"
+
+  network = google_compute_network.gcp_mycloud_network.id
+
+  # Faixa reservada: 10.200.0.0/16
+  address       = "10.200.0.0"
+  prefix_length = 16
+}
+
+
+# ============================================================
+# PRIVATE SERVICE NETWORKING CONNECTION
+# ============================================================
+#
+# Cria o peering entre a VPC e os serviços gerenciados
+# do Google através do Service Networking API.
+#
+# Necessário para Cloud SQL com IP privado.
+#
+
+resource "google_service_networking_connection" "private_vpc_connection" {
+
+  network = google_compute_network.gcp_mycloud_network.id
+
+  service = "servicenetworking.googleapis.com"
+
+  reserved_peering_ranges = [
+    google_compute_global_address.private_services.name
+  ]
+
+  depends_on = [
+    google_compute_global_address.private_services
+  ]
+}

@@ -6,6 +6,11 @@ data "google_secret_manager_secret_version" "mysql_root" {
   version = "latest"
 }
 
+# Consulta a VPC existente
+data "google_compute_network" "infra" {
+  name = "gcp-mycloud-network"
+}
+
 # Instância Cloud SQL
 resource "google_sql_database_instance" "instance" {
   name             = "my-database-instance"
@@ -17,14 +22,20 @@ resource "google_sql_database_instance" "instance" {
     edition           = "ENTERPRISE"
     availability_type = "ZONAL"
 
-    # Configuração de IP público e liberação de acesso
+    # Configuração de rede privada
     ip_configuration {
-      ipv4_enabled = true
+      ipv4_enabled    = true
+      private_network = data.google_compute_network.infra.id
 
+      # Configuração anterior de IP público
+      # Mantida comentada para referência futura.
+      #
+      # ipv4_enabled = true
+      #
       authorized_networks {
-        name  = "dba-access"
-        value = var.dba_ip
-      }
+         name  = "dba-access"
+         value = var.dba_ip
+       }
     }
   }
 
