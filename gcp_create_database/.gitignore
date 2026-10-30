@@ -1,0 +1,36 @@
+# Terraform state files
+terraform.tfstate
+terraform.tfstate.backup
+
+# Terraform crash logs
+crash.log
+
+# Terraform plan files
+*.tfplan
+*.BKP
+
+# Terraform variable override files
+terraform.tfvars
+
+# Local .terraform directories
+.terraform/
+
+# Private keys
+*.pem
+*.key
+
+# Editor and OS-specific files
+.DS_Store
+*.swp
+*.bak
+*.tmp
+*.log
+*.~*
+
+# JetBrains IDEs
+.idea/
+
+# VS Code
+.vscode/
+
+.terraform.lock.hcl
