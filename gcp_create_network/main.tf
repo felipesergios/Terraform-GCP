@@ -1,28 +1,3 @@
-terraform {
-  required_version = ">= 1.6.0"
-
-  required_providers {
-    google = {
-      source  = "hashicorp/google"
-      version = "~> 7.0"
-    }
-  }
-}
-
-# Provider responsável pela comunicação entre o Terraform e o GCP.
-#
-# As credenciais não são informadas aqui.
-# O Terraform utilizará as Application Default Credentials (ADC)
-# configuradas anteriormente através do:
-#
-# gcloud auth application-default login
-#
-provider "google" {
-  project = var.project_id
-  region  = var.region
-}
-
-
 # ============================================================
 # VPC
 # ============================================================
