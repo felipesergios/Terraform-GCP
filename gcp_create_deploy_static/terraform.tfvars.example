@@ -1,0 +1,4 @@
+project_id    = "felipeufrn"
+region        = "southamerica-east1"
+bucket_name   = "felipeufrn-static-site-SEU-SUFIXO-UNICO"
+force_destroy = false
